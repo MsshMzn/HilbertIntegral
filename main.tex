@@ -1,0 +1,650 @@
+%#!latexmk -pdfdvi -f main.tex
+%#LPR acroread %s
+
+\RequirePackage{plautopatch}
+\documentclass[paper=a4,
+fontsize=12pt,
+reqno,
+uplatex,
+dvipdfmx]{jlreq}
+%
+\jlreqsetup{
+thebibliography_heading={\section*{\refname}},
+}
+
+%
+%%%%%%%%%%%%%%% Include Package file %%%%%%%%%%%%%%%
+\usepackage{amsmath,amssymb,amsthm}
+%\usepackage{mathrsfs}
+\usepackage{graphicx,color}
+\usepackage{newtxtext}
+\usepackage[varg]{newtxmath}
+\usepackage[shortlabels]{enumitem}
+\usepackage[haranoaji]{pxchfon}
+
+\usepackage[alphabetic, y2k]{amsrefs}
+%
+%%%%%%%%%%%%%%% Paper size settings %%%%%%%%%%%%%%%
+%
+%
+\usepackage{geometry}%
+\geometry{left=20mm,right=20mm,top=15mm,bottom=25mm}
+\geometry{a4paper}
+%
+
+%%%%%%%%%%%%%%% mathtools %%%%%%%%%%%%%%%
+%
+\usepackage{mathtools}
+\mathtoolsset{showonlyrefs=true}
+%
+%
+%
+%%%%%%%%%%%%%%% hyperref %%%%%%%%%%%%%%%
+%
+\usepackage{hyperref}
+\usepackage{pxjahyper}
+%
+%
+%
+%%%%%%%%%%%%%%% Setting of Theorem-like environment %%%%%%%%%%%%%%%
+% [Italic font in Theorem-like environment]
+%\theoremstyle{definition} % if change the roman font
+\theoremstyle{definition} % Change the Roman font
+%\newtheorem{definition}{定義}[chapter]
+\newtheorem{theorem}{定理}
+\newtheorem{proposition}[theorem]{命題}
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{corollary}[theorem]{系}
+\newtheorem{problem}{問題}
+\newtheorem{example}{例}
+\newtheorem*{definition}{定義}
+\newtheorem*{remark}{注意}
+%
+ 
+%
+%%%%%%%%%% Proof %%%%%
+\renewcommand{\proofname}{証明}  
+% ((Use the environment in proof))
+% \begin{proof}
+% \end{proof}
+% white box in the end of proof
+%
+%
+% make new QED
+% \QED{foo}
+% we write a black box in the right and output foo after the black box
+\newcommand{\QED}[1]{\hfill$\blacksquare$ #1\par}
+% 
+%
+%
+%%%%%%%%% 1.1 times Line stretch %%%%%%%%%
+% If you do not use Japanese, that command should be commented out.
+%
+%
+%%%%%%% Mathematical symbols %%%%%%%%%%%%%
+%
+\input{mymacro.tex}
+%
+%%%%%%%%%%%%%%% Counter setting in the equation's reference %%%%%%%%%%%%%%%
+% For amsart, use this counter setting
+%
+%
+%%% Definition of the \section (not use the \scshape)
+%
+%
+%\usepackage{input/myamssec}
+%
+%%% \par after proofname
+%
+%\usepackage{input/myamspf}
+%
+%%% \par after theorem environment
+%
+%\usepackage{input/myamsthm}
+%
+
+%%%%%%%%%% Framed settings %%%%%
+%
+%\definecolor{shadecolor}{gray}{0.9}
+%\newenvironment{shadedf}{%
+%  \def\FrameCommand{\fcolorbox{white}{shadecolor}}%
+%  \MakeFramed {\advance\hsize-\width \FrameRestore}%
+%  }%
+%{\endMakeFramed}
+%
+%
+%
+
+
+%%%%%%%%%%%%%%% temporary Package %%%%%%%%%%%%%%%
+
+\usepackage[inline,right]{showlabels}   % Output of cite and reference
+
+%\usepackage{showkeys}   % Output of cite and reference
+%\usepackage{refcheck}   % check of no uselabel 
+
+%%%%%%%%%%%%%%% title Setting %%%%%%%%%%%%%%%
+%
+\title{Hilbert積分の拡張と応用}
+\author{}
+%
+%
+%%%%%%%%%%%%%%% page style setting %%%%%%%%%%%%%%%
+%
+\allowdisplaybreaks[1]
+\DeclareMathOperator{\rot}{rot}
+\let\Re\relax
+\let\Im\relax
+\DeclareMathOperator{\Re}{Re}
+\DeclareMathOperator{\Im}{Im}
+
+\usepackage{bm}
+\renewcommand{\vec}[1]{\bm{#1}}
+
+
+%
+%%%%%%%%%%%%%%% end preamble %%%%%%%%%%%%%%%
+%
+\begin{document}
+\maketitle
+
+\section{Hilbert積分}
+\cite{MR944909}*{Chapter 9}によると，Hilbertは2重和
+\begin{equation}
+ \sum_{m=1}^\infty
+  \sum_{n=1}^\infty
+  \frac{1}{m+n}a_mb_n
+\end{equation}
+の研究を始めて行ったとされる．この積分型
+\begin{equation}
+ \int_0^\infty
+  \left(
+  \int_0^\infty
+  \frac{1}{x+y}
+  f(x)
+  g(y)
+  \,dx
+  \right)
+  \,dy
+\end{equation}
+の一般化である
+\begin{equation}
+ \int_0^\infty
+  \left(
+  \int_0^\infty
+  K(x,y)
+  f(x)
+  g(y)
+  \,dx
+  \right)
+  \,dy
+\end{equation}
+を考えよう．
+
+$K:(0,\infty)\times(0,\infty)\rightarrow\R$が$-1$次斉次であるとはすべての$x,y>0$と$\lambda>0$に対して
+\begin{equation}
+ K(\lambda x,\lambda y)
+  =
+  \frac{1}{\lambda}K(x,y)
+  =
+  \lambda^{-1}K(x,y)
+\end{equation}
+をみたすことである．
+
+\begin{proposition}
+ $K:(0,\infty)\times(0,\infty)\rightarrow\R$を
+ $(0,\infty)\times(0,\infty)$上の非負値，$-1$次斉次なLebesgue可測関数
+ とする．このとき，任意の$f,g\in C_0^\infty(0,\infty)$と$0<a\leq\infty$，
+ $1<p<\infty$に対して
+ \begin{equation}
+  \label{eq:HilbertIntegral1}
+    \int_0^a
+    \left(
+     \int_0^\infty
+     K(x,y)
+     |g(y)|
+     dy
+    \right)
+    |f(x)|
+    \,dx
+   \leq
+   \int_0^\infty
+   K(1,w)
+   w^{-\frac{1}{q}}
+   \|g\|_{L^{q}(0,wa)}
+   \,dw
+   \|f\|_{L^p(0,a)}
+ \end{equation}
+ が成り立つ．ただし，$q$は$p$のH\"older共役，すなわち
+ $\frac{1}{p}+\frac{1}{q}=1$である．
+\end{proposition}
+
+\begin{proof}
+ $0<x<a$に対して，$y=wx$と変数変換すると，$K$が$-1$次斉次より
+ \begin{equation}
+  \int_0^\infty
+   K(x,y)|g(y)|
+   \,dy
+   =
+   \int_0^\infty
+   K(x,wx)|g(wx)|
+   x
+   \,dw
+   =
+   \int_0^\infty
+   K(1,w)|g(wx)|
+   \,dw
+ \end{equation}
+ が成り立つ．Fubiniの定理より
+ \begin{equation}
+  \label{eq:HilbertIntegral_proof}
+  \int_0^a
+   \left(
+     \int_0^\infty
+   K(x,y)|g(y)|
+   \,dy
+   \right)
+   |f(x)|
+   \,dx
+   =
+   \int_0^\infty
+   K(1,w)
+   \left(
+    \int_0^a
+    |f(x)|
+    |g(wx)|
+    \,dx
+   \right)
+   \,dw
+ \end{equation}
+ となる．H\"olderの不等式と変数変換$y=wx$より
+ \begin{equation}
+  \begin{split}
+   \int_0^a
+   |f(x)|
+   |g(wx)|
+   \,dx
+   &\leq
+   \|f\|_{L^p(0,a)}
+   \left(
+   \int_0^a
+   |g(wx)|^q
+   \,dx
+   \right)^{\frac{1}{q}}
+   \\
+   &=
+   \|f\|_{L^p(0,a)}
+   \left(
+   \int_0^{wa}
+   |g(y)|^q
+   w^{-1}\,dy
+   \right)^{\frac{1}{q}}
+   =
+   \|f\|_{L^p(0,a)}
+   \|g\|_{L^p(0,wa)}
+   w^{-\frac{1}{q}}
+  \end{split} 
+ \end{equation}
+ となるから
+ \begin{equation}
+  \int_0^\infty
+   K(1,w)
+   \left(
+    \int_0^a
+    |f(x)|
+    |g(wx)|
+    \,dx
+   \right)
+   \,dw
+   \leq
+   \int_0^\infty
+   K(1,w)
+   \|g\|_{L^p(0,wa)}
+   w^{-\frac{1}{q}}
+   \,dw
+   \|f\|_{L^p(0,a)}
+ \end{equation}
+ が得られる．~\eqref{eq:HilbertIntegral_proof}に代入すること
+ で~\eqref{eq:HilbertIntegral1}が得られる．
+\end{proof}
+
+双対性を用いることで次が得られる．
+
+\begin{corollary}
+ $K:(0,\infty)\times(0,\infty)\rightarrow\R$を
+ $(0,\infty)\times(0,\infty)$上の非負値，$-1$次斉次なLebesgue可測関数
+ とする．このとき，任意の$g\in C_0^\infty(0,\infty)$と$0<a\leq\infty$，
+ $1<p<\infty$に対して
+ \begin{equation}
+  \label{eq:HilbertIntegral2}
+  \int_0^a
+   \left(
+   \int_0^\infty
+   K(x,y)g(y)
+   \,dy
+   \right)^p
+   \,dx
+   \leq
+   \left(
+   \int_0^\infty
+   K(1,w)
+   w^{-\frac{1}{p}}
+   \|g\|_{L^p(0,wa)}
+   \,dw
+   \right)^p
+ \end{equation}
+ が成り立つ．
+\end{corollary}
+
+\begin{proof}
+ 任意の$\phi\in C_0^\infty(0,\infty)$に対して~\eqref{eq:HilbertIntegral1}
+ より
+ \begin{equation}
+  \begin{split}
+   \left|
+   \int_0^a
+   \left(
+   \int_0^\infty
+   K(x,y)
+   |g(y)|
+   dy
+   \right)
+   \phi(x)
+   \,dx
+   \right|
+   &\leq
+   \int_0^a
+    \left(
+     \int_0^\infty
+     K(x,y)
+     |g(y)|
+     dy
+    \right)
+    |\phi(x)|
+   \,dx
+   \\
+   &\leq
+   \int_0^\infty
+   K(1,w)
+   w^{-\frac{1}{q}}
+   \|g\|_{L^{q}(0,wa)}
+   \,dw
+   \|\phi\|_{L^p(0,a)}
+  \end{split} 
+ \end{equation}
+ が成り立つ．双対性の議論により~\eqref{eq:HilbertIntegral2}が得られる．
+\end{proof}
+
+\section{Hilbert積分の応用}
+
+$\beta>0$と$x,y>0$に対して
+\begin{equation}
+ K(x,y)
+  :=
+  \left(
+  \frac{y}{x}
+  \right)^\beta
+  \frac{1}{y}
+  \chi_{(0,x)}(y)
+\end{equation}
+とおく．任意の$\lambda>0$に対して
+\begin{equation}
+ K(\lambda x,\lambda y)
+  =
+  \left(
+  \frac{y}{x}
+  \right)^\beta
+  \frac{1}{\lambda y}
+  \chi_{(0,\lambda x)}(\lambda y)
+  =
+  \frac{1}{\lambda}
+  K(x, y)
+\end{equation}
+となるから，$K$は$-1$次斉次な非負値Lebesgue可測関数である．従っ
+て~\eqref{eq:HilbertIntegral2}より
+\begin{equation}
+ \label{eq:Hardy01}
+\begin{split}
+  \int_0^a
+  \left(
+  \int_0^x
+  \left(
+  \frac{y}{x}
+  \right)^\beta
+  |g(y)|
+  \frac{dy}{y}
+  \right)^p
+  \,dx
+  &\leq
+  \left(
+  \int_0^1
+  w^{\beta-1-\frac{1}{p}}
+  \left(
+  \int_0^{wa}
+  |g(y)|^p
+  \,dy
+  \right)^\frac{1}{p}
+  \,dw
+  \right)^p
+  \\
+  &\leq
+  \left(
+  \int_0^1
+  w^{\beta-1-\frac{1}{p}}
+  \,dw
+  \right)^p
+  \int_0^{a}
+  |g(y)|^p
+  \,dy
+ \end{split}
+\end{equation}
+が得られる．$\phi(y):=y^\beta|g(y)|$とおくと
+\begin{equation}
+ \text{~\eqref{eq:Hardy01}の左辺}
+  =
+  \int_0^a
+  x^{-p\beta+1}
+  \left(
+    \int_0^x
+  \phi(y)
+  \,\frac{dy}{y}
+  \right)^p
+  \,\frac{dx}{x}
+\end{equation}
+と
+\begin{equation}
+ \text{~\eqref{eq:Hardy01}の右辺}
+  =
+  \left(
+  \int_0^1
+  w^{\beta-1-\frac{1}{p}}
+  \,dw
+  \right)^p
+  \int_0^{a}
+  y^{-p\beta+1}\phi(y)^p
+  \,\frac{dy}{y}
+\end{equation}
+より$\alpha>0$に対して
+\begin{equation}
+ -p\beta+1+-p\alpha
+  \Longleftrightarrow
+  \beta
+  =
+  \frac{1}{p}+\alpha
+\end{equation}
+とおくと
+\begin{equation}
+ \int_0^a
+  x^{-p\alpha}
+  \left(
+   \int_0^x
+  \phi(y)
+  \,\frac{dy}{y}
+  \right)^p
+  \,\frac{dx}{x}
+  \leq
+  \left(
+  \int_0^1
+  w^{\alpha-1}
+  \,dw
+  \right)^p
+  \int_0^{a}
+  y^{-p\alpha}\phi(y)^p
+  \,\frac{dy}{y}
+  =
+  \frac{1}{\alpha^p}
+  \int_0^{a}
+  y^{-p\alpha}\phi(y)^p
+  \,\frac{dy}{y}
+\end{equation}
+となる．
+
+\begin{proposition}[\cite{MR2523200}*{(A.10)}]
+ $0<a\leq\infty$に対し$\phi:(0,a)\rightarrow\R$を非負値Lebesgue可測関数
+ とする．このとき，任意の$\alpha>0$と$p>1$に対して
+ \begin{equation}
+  \label{eq:Hardy_type_Inequality}
+   \int_0^a
+   t^{-p\alpha}
+   \left(
+    \int_0^t
+    \phi(s)
+    \,\frac{ds}{s}
+   \right)^p
+   \,\frac{dt}{t}
+  \leq
+  \frac{1}{\alpha^p}
+  \int_0^{a}
+  s^{-p\alpha}\phi(s)^p
+  \,\frac{ds}{s}   
+ \end{equation}
+ が成り立つ．
+\end{proposition}
+
+\begin{remark}
+ Fubiniの定理を用いれば\eqref{eq:Hardy_type_Inequality}は$p=1$でも成立す
+ る．
+\end{remark}
+
+$X$をBanach空間とする．$1\geq p>\infty$と区間$I\subset\R$に対して，$f\in
+L^p_*(I:X)$であるとは，$f:I\rightarrow X$がBochner可積分であって
+\begin{equation}
+ \|f\|_{L^p_*(I:X)}
+  :=
+  \left(
+  \int_I
+  \|f(t)\|_X^p
+  \,\frac{dt}{t}
+  \right)^{\frac{1}{p}}
+  <\infty
+\end{equation}
+をみたすことである．~\eqref{eq:Hardy_type_Inequality}を用いると，次が成
+り立つ．
+
+\begin{corollary}[\cite{MR2523200}*{Corollary A.13}]
+ $X$をBanach空間とする．$0<a\leq \infty$，$0<\theta<1$，$1\leq p<\infty$
+ に対し，$u:(0,a)\rightarrow X$はBochoner可積分関数であって
+\begin{equation}
+ t\mapsto u_\theta(t)=t^\theta u(t)
+\end{equation}
+ が$L^p(0,a:X)$に属するとする．このとき，$t>0$に対して積分平均
+ \begin{equation}
+  v(t)
+   :=
+   \frac{1}{t}
+   \int_0^tu(t)\,dt
+ \end{equation}
+ も同様の性質を持ち
+ \begin{equation}
+  \label{eq:Bochoner-Mean-Inequality}
+   \|v_\theta\|_{L^p_*(0,a:X)}
+   \leq
+   \frac{1}{1-\theta}
+  \|u_\theta\|_{L^p_*(0,a:X)}
+ \end{equation}
+ が成り立つ．
+\end{corollary}
+
+\begin{proof}
+ $v_\theta$の定義より
+ \begin{equation}
+  \|v_\theta\|_{L^p_*(0,a:X)}^p
+   =
+   \int_0^a
+   \|v_\theta(t)\|_X^p
+   \,\frac{dt}{t}
+   =
+   \int_0^a
+   \|t^\theta v(t)\|_X^p
+   \,\frac{dt}{t}
+   =
+   \int_0^a
+   t^{p\theta}
+   \|v(t)\|_X^p
+   \,\frac{dt}{t}
+ \end{equation}
+ である．$v$の定義と三角不等式より
+ \begin{equation}
+  \|v(t)\|_X
+   \leq
+   t^{-1}
+   \int_0^t
+   \|u(s)\|_X
+   \,ds
+   =
+  t^{-1}
+  \int_0^t
+  \|su(s)\|_X
+  \,\frac{ds}{s}
+ \end{equation}
+ だから~\eqref{eq:Hardy_type_Inequality}より
+ \begin{equation}
+  \begin{split}
+   \int_0^a
+   t^{p\theta}
+   \|v(t)\|_X^p
+   \,\frac{dt}{t}
+   &\leq
+   \int_0^a
+   t^{-p(1-\theta)}
+   \left(
+   \int_0^t
+   \|su(s)\|_X
+   \,\frac{ds}{s}
+   \right)^p
+   \,\frac{dt}{t}
+   \\
+   &\leq
+   \frac{1}{(1-\theta)^p}
+   \int_0^a
+   s^{-p(1-\theta)}
+   \|su(s)\|^p_X
+   \,\frac{ds}{s}
+   \\
+   &=
+   \frac{1}{(1-\theta)^p}
+   \int_0^a
+   \|s^\theta u(s)\|^p_X
+   \,\frac{ds}{s}
+   \\
+   &=
+   \frac{1}{(1-\theta)^p}
+   \int_0^a
+   \|u_\theta (s)\|^p_X
+   \,\frac{ds}{s}
+  \end{split} 
+ \end{equation}
+ となる．従って，~\eqref{eq:Bochoner-Mean-Inequality}が成り立つ．
+\end{proof}
+
+
+
+% bibtex Settings
+\bibliography{references}
+%\bibliographystyle{myjalpha} % in Japanese
+
+%\bibliographystyle{amsplain} % not in Japanese
+
+
+\end{document}
+
